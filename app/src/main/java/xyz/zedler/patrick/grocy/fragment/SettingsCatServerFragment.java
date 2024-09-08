@@ -24,15 +24,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.internal.TextWatcherAdapter;
+
 import xyz.zedler.patrick.grocy.Constants;
 import xyz.zedler.patrick.grocy.R;
 import xyz.zedler.patrick.grocy.activity.MainActivity;
@@ -163,11 +169,36 @@ public class SettingsCatServerFragment extends BaseFragment {
   }
 
   public void openServerWebsite() {
-    String serverUrl = viewModel.getServerUrl();
-    if (serverUrl == null) {
-      return;
-    }
-    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(serverUrl)));
+    openServerDialog();
+//    String serverUrl = viewModel.getServerUrl();
+//    if (serverUrl == null) {
+//      return;
+//    }
+//    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(serverUrl)));
+  }
+
+  public void openServerDialog() {
+
+    EditText editText = new EditText(getContext());
+    editText.setPadding(
+            32,
+            16,
+            32,
+            16
+    );
+    editText.setText(viewModel.getServerUrl());
+
+    new MaterialAlertDialogBuilder(activity)
+            .setTitle("Update Server URl")
+            .setView(editText)
+            .setPositiveButton("Save", (d, w) -> {
+              performHapticHeavyClick();
+              viewModel.setServerUrl(editText.getText().toString());
+              RestartUtil.restartApp(activity);
+            })
+            .setNegativeButton("Cancel", (d, w) -> performHapticClick())
+            .create()
+            .show();
   }
 
   public void showRestartDialog() {

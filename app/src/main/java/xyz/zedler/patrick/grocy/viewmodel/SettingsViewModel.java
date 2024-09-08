@@ -223,6 +223,16 @@ public class SettingsViewModel extends BaseViewModel {
     return sharedPrefs.getString(Constants.PREF.SERVER_URL, null);
   }
 
+  public void setServerUrl(String url) {
+    SharedPreferences.Editor editor = sharedPrefs.edit().putString(Constants.PREF.SERVER_URL, url);
+
+    if (sharedPrefs.getString(Constants.PREF.HOME_ASSISTANT_SERVER_URL, null) != null) {
+      editor.putString(Constants.PREF.SERVER_URL, url);
+    }
+
+    editor.commit();
+  }
+
   public int getTheme() {
     return sharedPrefs.getInt(APPEARANCE.DARK_MODE, SETTINGS_DEFAULT.APPEARANCE.DARK_MODE);
   }
